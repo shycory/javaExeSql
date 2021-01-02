@@ -8,13 +8,7 @@ import org.sunyh.mapper.TableMapper;
 import org.sunyh.utils.MybatisUtil;
 import org.sunyh.utils.PrintUtil;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
-import java.math.BigDecimal;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -24,23 +18,42 @@ import java.util.*;
  */
 public class ChangeTableService {
     private static Logger log=Logger.getLogger(ChangeTableService.class);
+    private static ChangeTableService changeTableService;
     //数据
     private List<LinkedHashMap> linkedHashMaps;
     //表结构
     private List<Map> tableStruct;
 
-    public ChangeTableService() {
+    public static ChangeTableService getInstance(){
+        if(changeTableService==null){
+            synchronized (ChangeTableService.class){
+                if(changeTableService==null){
+                    changeTableService=new ChangeTableService();
+                }
+            }
+        }
+        return changeTableService;
+    }
+
+    private ChangeTableService() {
         SqlSession sqlSession = MybatisUtil.getSqlSession();
         TableMapper mapper = sqlSession.getMapper(TableMapper.class);
         try{
             //查询表结构
             tableStruct = mapper.getTableStruct(App.TABLE_NAME);
             PrintUtil.printMapList(tableStruct);
+
+            linkedHashMaps = mapper.queryAllData(App.TABLE_NAME);
+            this.changeTimeStamp();
         }catch (Exception e){
             e.printStackTrace();
         }finally {
             sqlSession.close();
         }
+    }
+
+    public List<LinkedHashMap> getLinkedHashMaps() {
+        return linkedHashMaps;
     }
 
     public List<Map> getTableStruct() {
@@ -63,7 +76,7 @@ public class ChangeTableService {
         });
     }
     //获取数据通过表名
-    private void getData(String tableName) throws Exception {
+   /* private void getData(String tableName) throws Exception {
         SqlSession sqlSession = MybatisUtil.getSqlSession();
         TableMapper mapper = sqlSession.getMapper(TableMapper.class);
         try{
@@ -76,7 +89,7 @@ public class ChangeTableService {
         }finally {
             sqlSession.close();
         }
-    }
+    }*/
     //向B表中插入数据
     private void insertBatchDataToB(String B,List<LinkedHashMap> list) throws Exception {
         SqlSession sqlSession = MybatisUtil.getSqlSession();
@@ -95,7 +108,7 @@ public class ChangeTableService {
         }
     }
     //将A中数据 拷贝到B
-    public void copyDataToBFromA(String A,String B){
+    /*public void copyDataToBFromA(String A,String B){
         try {
             getData(A);
             insertBatchDataToB(B,linkedHashMaps);
@@ -103,7 +116,7 @@ public class ChangeTableService {
             log.info("拷贝数据失败");
             e.printStackTrace();
         }
-    }
+    }*/
     //重置
     public void reset(){
         SqlSession sqlSession = MybatisUtil.getSqlSession();
@@ -137,8 +150,6 @@ public class ChangeTableService {
             }catch (Exception e){
                 log.info("<<<<<<<<  备份表不存在,删除失败,继续向下执行");
             }
-            //读取数据
-            this.getData(App.TABLE_NAME);
 
             //查询主键
             String tableKey = mapper.getTableKey(App.TABLE_NAME);
