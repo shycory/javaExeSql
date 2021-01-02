@@ -1,4 +1,9 @@
-java maven project
+# why use it? 
+    Solve the problem that Oracle can only add fields at the end
+# 为什么要做这个功能
+    解决 oracle 添加字段只能在最后添加的问题
+## language
+    java maven project
 ---
 #### 使用框架:mybatis
 
