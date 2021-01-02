@@ -12,7 +12,7 @@ public class App {
     public static void main( String[] args ){
         //构造函数中对 TABLE_NAME 表进行查询 表结构以及数据
         ChangeTableService changeTableService = ChangeTableService.getInstance();
-        TableColumnUtil tableColumnUtil=TableColumnUtil.getInstance(changeTableService);
+        TableColumnUtil tableColumnUtil=TableColumnUtil.getInstance(changeTableService.getTableStruct(),changeTableService.getLinkedHashMaps());
 
         //插入,位置取值范围:[0,list.size()-1]; 0为插到第一列
         try {

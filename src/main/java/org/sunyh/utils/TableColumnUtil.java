@@ -3,26 +3,25 @@ package org.sunyh.utils;
 import org.sunyh.bean.NumberField;
 import org.sunyh.bean.TimeStampField;
 import org.sunyh.bean.Varchar2Field;
-import org.sunyh.service.ChangeTableService;
 
 import java.lang.reflect.Field;
 import java.util.*;
 
 public class TableColumnUtil {
     private static TableColumnUtil tableColumnUtil=null;
-    private ChangeTableService changeTableService;
+    private List<LinkedHashMap> list;
     private List<Map> tableStruct;
 
-    private TableColumnUtil(ChangeTableService changeTableService) {
-        this.changeTableService = changeTableService;
-        this.tableStruct=changeTableService.getTableStruct();
+    private TableColumnUtil(List<Map> tableStruct, List<LinkedHashMap> data) {
+        this.tableStruct=tableStruct;
+        this.list=data;
     }
 
-    public static TableColumnUtil getInstance(ChangeTableService changeTableService){
+    public static TableColumnUtil getInstance(List<Map> tableStruct, List<LinkedHashMap> data){
         if(tableColumnUtil==null){
             synchronized (TableColumnUtil.class){
                 if(tableColumnUtil==null){
-                    tableColumnUtil=new TableColumnUtil(changeTableService);
+                    tableColumnUtil=new TableColumnUtil(tableStruct,data);
                 }
             }
         }
@@ -31,7 +30,6 @@ public class TableColumnUtil {
 
     //将原表中的 index下标的 字段删除
     public void delColumn(int index){
-        List<LinkedHashMap> list=changeTableService.getLinkedHashMaps();
         Map remove = tableStruct.remove(index);
         for(LinkedHashMap map:list){
             map.remove(remove.get("COLUMN_NAME"));
