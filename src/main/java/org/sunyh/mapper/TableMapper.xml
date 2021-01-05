@@ -38,7 +38,7 @@
     <update id="createNewTable" statementType="STATEMENT">
         create table ${map.tableName} (
         <foreach collection="map.columns" item="column" >
-            "${column.COLUMN_NAME}" ${column.DATA_TYPE}
+            ${column.COLUMN_NAME} ${column.DATA_TYPE}
             <choose>
                 <when test="column.DATA_TYPE == 'VARCHAR2'.toString()">
                     (${column.CHAR_LENGTH} CHAR)
@@ -61,9 +61,9 @@
             ,
         </foreach>
         <if test="map.CONSTRAINT_NAME != null and map.CONSTRAINT_NAME != ''">
-            CONSTRAINT "${map.CONSTRAINT_NAME}"
+            CONSTRAINT ${map.CONSTRAINT_NAME}
         </if>
-        PRIMARY KEY ("${map.COLUMN_NAME}")
+        PRIMARY KEY (${map.COLUMN_NAME})
         )
 
     </update>
