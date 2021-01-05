@@ -33,7 +33,6 @@
         where t.TABLE_NAME=c.TABLE_NAME
         and t.COLUMN_NAME=c.COLUMN_NAME
         and t.TABLE_NAME= #{tableName}
-        order by t.COLUMN_ID
     </select>
 
     <update id="createNewTable" statementType="STATEMENT">
